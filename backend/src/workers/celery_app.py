@@ -6,7 +6,7 @@ celery_app = Celery(
     "docmind",
     broker=settings.CELERY_BROKER_URL,
     backend=settings.CELERY_RESULT_BACKEND,
-    include=["src.workers.email_tasks"],
+    include=["src.workers.document_tasks", "src.workers.email_tasks"],
 )
 
 celery_app.conf.update(

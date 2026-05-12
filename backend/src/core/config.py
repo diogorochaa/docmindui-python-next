@@ -1,4 +1,6 @@
-from pydantic import field_validator
+from pathlib import Path
+
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -11,6 +13,15 @@ class Settings(BaseSettings):
     CELERY_BROKER_URL: str = "amqp://guest:guest@localhost:5672//"
     CELERY_RESULT_BACKEND: str = "redis://localhost:6379/0"
     CELERY_TASK_ALWAYS_EAGER: bool = False
+    CELERY_INDEX_DOCUMENTS: bool = Field(
+        default=False,
+        description="Indexação de PDF no worker Celery; disco deve ser visível na API e no worker.",
+    )
+    VECTOR_STORE_DIR: str = Field(
+        default="",
+        description="Persistência do FAISS; em Docker use o mesmo volume na API e no worker.",
+    )
+    CELERY_INDEX_TASK_TIMEOUT_SECONDS: int = 300
 
     SECRET_KEY: str = "change-me-in-production-use-openssl-rand-hex-32"
     JWT_ALGORITHM: str = "HS256"
@@ -32,6 +43,18 @@ class Settings(BaseSettings):
         if isinstance(v, str):
             return v.strip().lower() in ("1", "true", "yes", "on")
         return bool(v)
+
+    @field_validator("CELERY_INDEX_DOCUMENTS", mode="before")
+    @classmethod
+    def parse_celery_index_documents(cls, v: object) -> bool:
+        return cls.parse_bool(v)
+
+    def effective_vector_store_dir(self) -> Path | None:
+        if self.VECTOR_STORE_DIR.strip():
+            return Path(self.VECTOR_STORE_DIR).expanduser().resolve()
+        if self.CELERY_INDEX_DOCUMENTS:
+            return Path("data/vector_store").resolve()
+        return None
 
 
 settings = Settings()

@@ -64,8 +64,12 @@ services:
       DATABASE_URL: postgresql+psycopg://postgres:postgres@postgres:5432/docmind
       CELERY_BROKER_URL: amqp://guest:guest@rabbitmq:5672//
       CELERY_RESULT_BACKEND: redis://redis:6379/0
+      CELERY_INDEX_DOCUMENTS: "true"
+      VECTOR_STORE_DIR: /data/vector_store
     ports:
       - "8001:8001"
+    volumes:
+      - vector_store_data:/data/vector_store
     depends_on:
       postgres:
         condition: service_healthy
@@ -91,6 +95,10 @@ services:
       DATABASE_URL: postgresql+psycopg://postgres:postgres@postgres:5432/docmind
       CELERY_BROKER_URL: amqp://guest:guest@rabbitmq:5672//
       CELERY_RESULT_BACKEND: redis://redis:6379/0
+      CELERY_INDEX_DOCUMENTS: "true"
+      VECTOR_STORE_DIR: /data/vector_store
+    volumes:
+      - vector_store_data:/data/vector_store
     depends_on:
       postgres:
         condition: service_healthy
@@ -103,3 +111,4 @@ volumes:
   postgres_data:
   redis_data:
   rabbitmq_data:
+  vector_store_data:

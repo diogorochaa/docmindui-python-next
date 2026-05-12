@@ -35,9 +35,9 @@ def register(payload: UserRegisterRequest, db: Session = Depends(get_db)):
         ) from None
 
     try:
-        send_welcome_email(user.email)
+        send_welcome_email.delay(user.email)
     except Exception:
-        logger.exception("Falha ao enviar e-mail de boas-vindas para %s", user.email)
+        logger.exception("Falha ao enfileirar e-mail de boas-vindas para %s", user.email)
 
     return UserResponse.model_validate(user)
 

@@ -45,7 +45,7 @@ def get_embeddings_adapter():
 
 @lru_cache
 def get_vector_store():
-    return FaissVectorStoreAdapter()
+    return FaissVectorStoreAdapter(persist_dir=settings.effective_vector_store_dir())
 
 
 @lru_cache
