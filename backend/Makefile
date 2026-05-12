@@ -25,7 +25,7 @@ install:
 	uv sync
 
 dev:
-	uv run uvicorn src.main:app --reload --port 8001
+	uv run uvicorn src.main:app --reload --port 8000
 
 run:
 	docker compose logs -f api

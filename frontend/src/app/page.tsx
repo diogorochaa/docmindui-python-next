@@ -1,6 +1,7 @@
 "use client"
 
 import { AnimatePresence, motion } from "framer-motion"
+import { Loader2 } from "lucide-react"
 import { useState } from "react"
 
 import { AuthGuard } from "@/features/auth/components/AuthGuard"
@@ -22,6 +23,7 @@ export default function Home() {
     input,
     selectedFile,
     loading,
+    historyLoading,
     feedbackMessage,
     setInput,
     setSelectedFile,
@@ -38,7 +40,7 @@ export default function Home() {
     <AuthGuard>
       <motion.div
         layout
-        className="flex h-screen overflow-hidden bg-[#0a0a0a]"
+        className="relative flex h-screen overflow-hidden bg-[#0a0a0a]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
@@ -127,6 +129,21 @@ export default function Home() {
             </div>
           )}
         </main>
+
+        {historyLoading ? (
+          <div
+            className="absolute inset-0 z-[100] flex items-center justify-center bg-[#0a0a0a]/85 backdrop-blur-[2px]"
+            role="status"
+            aria-live="polite"
+            aria-busy="true"
+            aria-label="Carregando histórico de conversas"
+          >
+            <div className="flex flex-col items-center gap-3">
+              <Loader2 className="h-9 w-9 animate-spin text-zinc-400" aria-hidden />
+              <p className="text-sm text-zinc-500">Carregando seu histórico…</p>
+            </div>
+          </div>
+        ) : null}
       </motion.div>
     </AuthGuard>
   )

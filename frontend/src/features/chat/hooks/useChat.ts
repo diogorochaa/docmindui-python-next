@@ -78,6 +78,7 @@ export function useChat() {
   const [input, setInput] = useState("")
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
+  const [historyLoading, setHistoryLoading] = useState(false)
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null)
 
   function upsertConversation(conversationId: string, messages: ChatMessage[]) {
@@ -103,6 +104,7 @@ export function useChat() {
     const accessToken = session?.accessToken
     if (!accessToken) {
       queueMicrotask(() => {
+        setHistoryLoading(false)
         setConversations([])
         setActiveConversationId(null)
         setInput("")
@@ -113,6 +115,7 @@ export function useChat() {
     }
 
     let cancelled = false
+    setHistoryLoading(true)
 
     async function loadHistory() {
       try {
@@ -151,6 +154,10 @@ export function useChat() {
           const conversation = createConversation()
           setConversations([conversation])
           setActiveConversationId(conversation.id)
+        }
+      } finally {
+        if (!cancelled) {
+          setHistoryLoading(false)
         }
       }
     }
@@ -286,6 +293,7 @@ export function useChat() {
     input,
     selectedFile,
     loading,
+    historyLoading,
     feedbackMessage,
     setInput,
     setSelectedFile,
