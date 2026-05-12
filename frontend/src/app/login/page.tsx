@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { PasswordInput } from "@/components/ui/password-input"
 import { Separator } from "@/components/ui/separator"
 import { loginAction } from "@/features/auth/actions"
 import { useAuth } from "@/features/auth/context"
@@ -112,10 +113,9 @@ export default function LoginPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Senha</Label>
-                <Input
+                <PasswordInput
                   id="password"
                   placeholder="Sua senha"
-                  type="password"
                   required
                   autoComplete="current-password"
                   value={password}

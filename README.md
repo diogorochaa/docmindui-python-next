@@ -9,7 +9,7 @@ Um sistema inteligente de processamento de documentos e chat com IA, composto po
 Este é um projeto full-stack que combina:
 
 - **Backend**: API REST com FastAPI para autenticação, processamento de documentos, embeddings, histórico de mensagens e chat com IA
-- **Frontend**: Aplicação web moderna com Next.js, React e Mantine UI para interação com usuários
+- **Frontend**: Aplicação web com Next.js 16, React, shadcn/ui (Radix), Tailwind CSS e Biome
 
 O sistema permite que usuários criem conta, façam login, enviem documentos (PDFs) e façam perguntas sobre o conteúdo através de um chat com IA.
 
@@ -208,21 +208,23 @@ Localização: `./frontend/`
 
 ### 🛠️ Tecnologias
 
-- **Next.js 16**: Framework React com Server Components
-- **React 19**: Biblioteca UI
+- **Next.js 16**: App Router e Server Components
+- **React 19**: UI
 - **TypeScript**: Tipagem estática
-- **Mantine**: Biblioteca de componentes UI moderna
-- **Tailwind CSS**: Utilitários CSS
+- **pnpm**: Gerenciador de pacotes
+- **Biome**: Lint e formatação
+- **shadcn/ui**: Componentes (Radix + Tailwind; ver `components.json`)
+- **Tailwind CSS v4**: Estilos utilitários (`globals.css` + PostCSS)
 - **Lucide React**: Ícones
 
 ### 📦 Dependências Principais
 
 ```
 next                # Framework React
-react               # Biblioteca UI
-@mantine/core       # Componentes UI
-@mantine/hooks      # Hooks do Mantine
-tailwindcss         # Utilitários CSS
+react / react-dom   # UI
+@radix-ui/*         # Primitivos (base do shadcn)
+tailwindcss         # Estilos
+@biomejs/biome      # Lint/format (dev)
 lucide-react        # Ícones
 ```
 
@@ -237,7 +239,7 @@ frontend/
 │   │   ├── login/page.tsx               # Tela de login
 │   │   ├── register/page.tsx            # Tela de cadastro
 │   │   ├── globals.css                  # Estilos globais
-│   │   └── providers.tsx                # Provedores (Mantine, auth)
+│   │   └── providers.tsx                # Provedores da aplicação
 │   ├── config/
 │   │   └── env.ts                       # Configurações de ambiente
 │   ├── features/
@@ -260,9 +262,10 @@ frontend/
 ├── package.json                         # Dependências
 ├── tsconfig.json                        # Configuração TypeScript
 ├── next.config.ts                       # Configuração Next.js
-├── postcss.config.mjs                   # Configuração PostCSS
-├── tailwind.config.js                   # Configuração Tailwind
-├── eslint.config.mjs                    # Configuração ESLint
+├── postcss.config.mjs                   # PostCSS (Tailwind v4)
+├── components.json                      # shadcn/ui (aliases e estilo)
+├── biome.json                           # Lint e formatação (Biome)
+├── pnpm-lock.yaml                       # Lockfile (pnpm)
 └── README.md                            # Documentação específica
 
 ```
@@ -271,19 +274,15 @@ frontend/
 
 #### Pré-requisitos
 
-- Node.js 18+
-- npm ou yarn
+- Node.js 22+ (recomendado; alinhado ao CI)
+- [pnpm](https://pnpm.io/) (versão fixada em `package.json` → `packageManager`, compatível com [Corepack](https://nodejs.org/api/corepack.html))
 
 #### Instalação
 
 ```bash
 cd frontend
 
-# Instalar dependências
-npm install
-
-# Ou com yarn
-yarn install
+pnpm install
 ```
 
 #### Variáveis de Ambiente
@@ -297,11 +296,7 @@ NEXT_PUBLIC_API_URL=http://localhost:8001
 #### Desenvolvimento
 
 ```bash
-# Rodar servidor de desenvolvimento
-npm run dev
-
-# Ou com yarn
-yarn dev
+pnpm dev
 ```
 
 A aplicação estará disponível em `http://localhost:3000`
@@ -309,18 +304,16 @@ A aplicação estará disponível em `http://localhost:3000`
 #### Build para Produção
 
 ```bash
-# Criar build otimizado
-npm run build
-
-# Iniciar servidor de produção
-npm run start
+pnpm build
+pnpm start
 ```
 
-#### Linting
+#### Lint e formatação (Biome)
 
 ```bash
-# Verificar código
-npm run lint
+pnpm run lint      # biome check
+pnpm run format    # biome format --write
+pnpm run check     # biome check --write (fix onde aplicável)
 ```
 
 ### 📄 Páginas Principais
@@ -336,7 +329,7 @@ npm run lint
 ### 1. Clonar/Preparar Projeto
 
 ```bash
-cd /home/desenvolvedor23/projetos/projeto-teste
+cd caminho/do/repositório
 ```
 
 ### 2. Backend
@@ -359,11 +352,8 @@ make dev
 ```bash
 cd frontend
 
-# Instalar dependências
-npm install
-
-# Rodar aplicação
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 ### 4. Acessar
@@ -391,7 +381,7 @@ npm run dev
 - **FastAPI Docs**: http://localhost:8001/docs (Swagger UI)
 - **FastAPI ReDoc**: http://localhost:8001/redoc
 - **Next.js Docs**: https://nextjs.org/docs
-- **Mantine Docs**: https://mantine.dev
+- **shadcn/ui**: https://ui.shadcn.com
 - **LangChain Docs**: https://python.langchain.com
 
 ---
@@ -401,7 +391,7 @@ npm run dev
 Ao fazer alterações:
 
 1. **Backend**: Use `make check` para validar código
-2. **Frontend**: Use `npm run lint` para verificar linting
+2. **Frontend**: Use `pnpm run lint` (Biome) e `pnpm run format` quando necessário
 3. Mantenha commits pequenos e descritivos
 4. Escreva testes para novas funcionalidades
 

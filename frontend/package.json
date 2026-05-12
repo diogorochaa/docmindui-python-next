@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.33.2",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -12,7 +13,7 @@
     "test:watch": "vitest",
     "format": "biome format --write .",
     "check": "biome check --write .",
-    "test:routes": "node ./scripts/check-auth-pages.mjs && npm run build"
+    "test:routes": "node ./scripts/check-auth-pages.mjs && pnpm run build"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.11",

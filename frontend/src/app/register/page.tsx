@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { PasswordInput } from "@/components/ui/password-input"
 import { Separator } from "@/components/ui/separator"
 import { registerAction } from "@/features/auth/actions"
 import { useAuth } from "@/features/auth/context"
@@ -121,10 +122,9 @@ export default function RegisterPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="register-password">Senha</Label>
-                <Input
+                <PasswordInput
                   id="register-password"
                   placeholder="Mínimo 8 caracteres"
-                  type="password"
                   required
                   autoComplete="new-password"
                   value={password}
@@ -134,10 +134,9 @@ export default function RegisterPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="register-confirm">Confirmar senha</Label>
-                <Input
+                <PasswordInput
                   id="register-confirm"
                   placeholder="Repita a senha"
-                  type="password"
                   required
                   autoComplete="new-password"
                   value={confirm}

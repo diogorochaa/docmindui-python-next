@@ -1,27 +1,23 @@
-import { Badge } from '@mantine/core'
+import { Badge } from "@/components/ui/badge"
 
-import type { ApiStatus } from '@/features/system/hooks/useApiStatus'
+import type { ApiStatus } from "@/features/system/hooks/useApiStatus"
 
 type ApiStatusBadgeProps = {
   status: ApiStatus
 }
 
 const labelByStatus: Record<ApiStatus, string> = {
-  checking: 'Verificando API...',
-  connected: 'API conectada',
-  offline: 'API offline',
+  checking: "Verificando API...",
+  connected: "API conectada",
+  offline: "API offline",
 }
 
-const colorByStatus: Record<ApiStatus, string> = {
-  checking: 'yellow',
-  connected: 'green',
-  offline: 'red',
-}
+const variantByStatus = {
+  checking: "warning",
+  connected: "success",
+  offline: "destructive",
+} as const satisfies Record<ApiStatus, "warning" | "success" | "destructive">
 
 export function ApiStatusBadge({ status }: ApiStatusBadgeProps) {
-  return (
-    <Badge color={colorByStatus[status]} variant="light">
-      {labelByStatus[status]}
-    </Badge>
-  )
+  return <Badge variant={variantByStatus[status]}>{labelByStatus[status]}</Badge>
 }
