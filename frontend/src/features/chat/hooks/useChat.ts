@@ -1,15 +1,16 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import { useAuth } from "@/features/auth/context"
+import type { AuthMeMessageRow } from "@/features/auth/types"
 import {
   postMessage,
   requestAiAnswer,
   requestDocumentUpload,
   requestMessages,
-} from "@/server/chat-api"
-import type { ChatConversation, ChatMessage } from "@/types/chat"
+} from "@/features/chat/api"
+import type { ChatConversation, ChatMessage } from "@/features/chat/types"
 
 function sortByNewest(conversations: ChatConversation[]) {
   return [...conversations].sort(
@@ -72,7 +73,9 @@ function getUserMessageContent(question: string, selectedFile: File | null) {
 }
 
 export function useChat() {
-  const { session, ready } = useAuth()
+  const { session, ready, prefetchedMessages, clearPrefetchedMessages } = useAuth()
+  const prefetchRef = useRef(prefetchedMessages)
+  prefetchRef.current = prefetchedMessages
   const [conversations, setConversations] = useState<ChatConversation[]>([])
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null)
   const [input, setInput] = useState("")
@@ -119,7 +122,14 @@ export function useChat() {
 
     async function loadHistory() {
       try {
-        const history = await requestMessages(accessToken)
+        const bootstrap = prefetchRef.current
+        let history: AuthMeMessageRow[]
+        if (bootstrap !== null) {
+          history = bootstrap
+          clearPrefetchedMessages()
+        } else {
+          history = await requestMessages(accessToken)
+        }
         if (cancelled) return
 
         const grouped = history.reduce<Record<string, ChatMessage[]>>((accumulator, message) => {
@@ -167,7 +177,7 @@ export function useChat() {
     return () => {
       cancelled = true
     }
-  }, [ready, session])
+  }, [ready, session?.accessToken, clearPrefetchedMessages])
 
   const activeConversation = conversations.find((item) => item.id === activeConversationId) ?? null
 

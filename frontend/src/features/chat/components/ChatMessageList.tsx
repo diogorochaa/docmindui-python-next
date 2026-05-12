@@ -2,9 +2,8 @@
 
 import { AnimatePresence, motion } from "framer-motion"
 import { File, FileImage, FileText, Loader2 } from "lucide-react"
-
+import type { ChatMessage } from "@/features/chat/types"
 import { cn } from "@/lib/utils"
-import type { ChatMessage } from "@/types/chat"
 
 type ChatMessageListProps = {
   messages: ChatMessage[]
@@ -75,7 +74,9 @@ export function ChatMessageList({ messages, loading }: ChatMessageListProps) {
                   </div>
                 ) : null}
                 {message.content ? (
-                  <p className="whitespace-pre-wrap break-words text-zinc-100">{message.content}</p>
+                  <p className="whitespace-pre-wrap wrap-break-word text-zinc-100">
+                    {message.content}
+                  </p>
                 ) : null}
               </div>
             </motion.div>

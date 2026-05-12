@@ -8,7 +8,11 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: ["./vitest.setup.ts"],
-    include: ["src/server/**/*.test.ts", "src/services/api/**/*.test.ts"],
+    include: [
+      "src/features/chat/api/**/*.test.ts",
+      "src/features/auth/api/**/*.test.ts",
+      "src/features/system/api/**/*.test.ts",
+    ],
     restoreMocks: true,
   },
   resolve: {

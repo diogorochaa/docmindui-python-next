@@ -7,9 +7,9 @@ import { useRouter } from "next/navigation"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { displayNameFromEmail, useAuth } from "@/features/auth/context"
+import type { ChatConversation } from "@/features/chat/types"
 import type { ApiStatus } from "@/features/system/hooks/useApiStatus"
 import { cn } from "@/lib/utils"
-import type { ChatConversation } from "@/types/chat"
 
 type ChatSidebarProps = {
   conversations: ChatConversation[]

@@ -2,13 +2,11 @@
 
 from celery import shared_task
 
-from src.application.use_cases.ingest_document import (
-    IngestDocumentCommand,
-    ingest_document_text,
-)
 from src.core.config import settings
 from src.infrastructure.adapters.faiss_vector_store_adapter import FaissVectorStoreAdapter
 from src.infrastructure.adapters.openai_embeddings_adapter import OpenAIEmbeddingsAdapter
+from src.modules.documents.repository import VectorDocumentRepository
+from src.modules.documents.service import DocumentIndexingService
 
 
 @shared_task(
@@ -22,5 +20,7 @@ def index_document_text_task(text: str) -> dict[str, int]:
     persist_dir = settings.effective_vector_store_dir()
     embeddings = OpenAIEmbeddingsAdapter()
     vector_store = FaissVectorStoreAdapter(persist_dir=persist_dir)
-    result = ingest_document_text(IngestDocumentCommand(text=text), embeddings, vector_store)
-    return {"chunks_indexed": result.chunks_indexed}
+    repository = VectorDocumentRepository(embeddings, vector_store)
+    service = DocumentIndexingService(repository)
+    chunks_indexed = service.index_text(text)
+    return {"chunks_indexed": chunks_indexed}

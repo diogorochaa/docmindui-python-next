@@ -1,18 +1,18 @@
-"use client"
+'use client'
 
-import { AnimatePresence, motion } from "framer-motion"
-import { Loader2 } from "lucide-react"
-import { useState } from "react"
+import { AnimatePresence, motion } from 'framer-motion'
+import { Loader2 } from 'lucide-react'
+import { useState } from 'react'
 
-import { AuthGuard } from "@/features/auth/components/AuthGuard"
-import { ChatComposer } from "@/features/chat/components/ChatComposer"
-import { ChatHeader } from "@/features/chat/components/ChatHeader"
-import { ChatMessageList } from "@/features/chat/components/ChatMessageList"
-import { ChatQuickActions } from "@/features/chat/components/ChatQuickActions"
-import { ChatSidebar } from "@/features/chat/components/ChatSidebar"
-import { useChat } from "@/features/chat/hooks/useChat"
-import { useApiStatus } from "@/features/system/hooks/useApiStatus"
-import { cn } from "@/lib/utils"
+import { AuthGuard } from '@/features/auth/components/AuthGuard'
+import { ChatComposer } from '@/features/chat/components/ChatComposer'
+import { ChatHeader } from '@/features/chat/components/ChatHeader'
+import { ChatMessageList } from '@/features/chat/components/ChatMessageList'
+import { ChatQuickActions } from '@/features/chat/components/ChatQuickActions'
+import { ChatSidebar } from '@/features/chat/components/ChatSidebar'
+import { useChat } from '@/features/chat/hooks/useChat'
+import { useApiStatus } from '@/features/system/hooks/useApiStatus'
+import { cn } from '@/lib/utils'
 
 export default function Home() {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
@@ -61,8 +61,8 @@ export default function Home() {
 
         <aside
           className={cn(
-            "fixed inset-y-0 left-0 z-50 flex w-[min(100%,17.5rem)] flex-col border-r border-white/5 bg-[#0d0d0d] transition-transform duration-200 ease-out md:relative md:inset-auto md:z-0 md:translate-x-0",
-            mobileSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0",
+            'fixed inset-y-0 left-0 z-50 flex w-[min(100%,17.5rem)] flex-col border-r border-white/5 bg-[#0d0d0d] transition-transform duration-200 ease-out md:relative md:inset-auto md:z-0 md:translate-x-0',
+            mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
           )}
         >
           <ChatSidebar
@@ -132,7 +132,7 @@ export default function Home() {
 
         {historyLoading ? (
           <div
-            className="absolute inset-0 z-[100] flex items-center justify-center bg-[#0a0a0a]/85 backdrop-blur-[2px]"
+            className="absolute inset-0 z-100 flex items-center justify-center bg-[#0a0a0a]/85 backdrop-blur-[2px]"
             role="status"
             aria-live="polite"
             aria-busy="true"

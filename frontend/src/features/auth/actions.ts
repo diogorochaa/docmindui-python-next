@@ -1,6 +1,6 @@
 "use server"
 
-import { requestLogin, requestRegister } from "@/server/auth-api"
+import { requestLogin, requestRegister } from "@/features/auth/api"
 
 export async function loginAction(email: string, password: string) {
   const data = await requestLogin(email, password)

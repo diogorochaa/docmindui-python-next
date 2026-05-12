@@ -1,6 +1,6 @@
 "use server"
 
-import { requestAiAnswer, requestDocumentUpload } from "@/server/chat-api"
+import { requestAiAnswer, requestDocumentUpload } from "@/features/chat/api"
 
 export async function askAiAction(question: string): Promise<string> {
   const trimmed = question.trim()

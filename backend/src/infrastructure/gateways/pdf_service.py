@@ -3,7 +3,7 @@ from io import BytesIO
 from pypdf import PdfReader
 from pypdf.errors import PdfReadError, PdfStreamError
 
-from src.domain.exceptions import InvalidDocumentError
+from src.shared.exceptions import InvalidDocumentError
 
 
 def extract_text_from_pdf(file_bytes: bytes) -> str:

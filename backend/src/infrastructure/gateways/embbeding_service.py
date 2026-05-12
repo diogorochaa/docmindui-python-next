@@ -1,7 +1,7 @@
 from langchain_openai import OpenAIEmbeddings
 
 from src.core.config import settings
-from src.domain.exceptions import MissingConfigurationError
+from src.shared.exceptions import MissingConfigurationError
 
 
 def get_embeddings():

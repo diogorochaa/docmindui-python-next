@@ -1,17 +1,21 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.presentation.errors.error_handlers import register_exception_handlers
-from src.presentation.routes import ai, auth, health, messages, upload
+from src.api.error_handlers import register_exception_handlers
+from src.modules.ai.routes import router as ai_router
+from src.modules.auth.routes import router as auth_router
+from src.modules.documents.routes import router as upload_router
+from src.modules.health.routes import router as health_router
+from src.modules.messages.routes import router as messages_router
 
 app = FastAPI()
 register_exception_handlers(app)
 
-app.include_router(health.router)
-app.include_router(auth.router)
-app.include_router(ai.router)
-app.include_router(upload.router)
-app.include_router(messages.router)
+app.include_router(health_router)
+app.include_router(auth_router)
+app.include_router(ai_router)
+app.include_router(upload_router)
+app.include_router(messages_router)
 
 app.add_middleware(
     CORSMiddleware,

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 
-import { checkApiHealth } from "@/services/api/health"
+import { checkApiHealth } from "@/features/system/api"
 
 export type ApiStatus = "checking" | "connected" | "offline"
 

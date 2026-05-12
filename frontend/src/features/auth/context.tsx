@@ -1,19 +1,19 @@
 "use client"
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react"
+import {
+  createContext,
+  type ReactNode,
+  use,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react"
 
-import type { AuthSession } from "@/features/auth/types"
+import { requestMe } from "@/features/auth/api/me-client"
+import type { AuthMeMessageRow, AuthSession } from "@/features/auth/types"
 
 const STORAGE_KEY = "docmind:auth"
-
-type AuthContextValue = {
-  session: AuthSession | null
-  ready: boolean
-  setSession: (session: AuthSession | null) => void
-  logout: () => void
-}
-
-const AuthContext = createContext<AuthContextValue | null>(null)
 
 function readStoredSession(): AuthSession | null {
   if (typeof window === "undefined") return null
@@ -28,17 +28,71 @@ function readStoredSession(): AuthSession | null {
   }
 }
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export type AuthContextValue = {
+  session: AuthSession | null
+  ready: boolean
+  prefetchedMessages: AuthMeMessageRow[] | null
+  clearPrefetchedMessages: () => void
+  setSession: (session: AuthSession | null) => void
+  logout: () => void
+}
+
+const AuthContext = createContext<AuthContextValue | null>(null)
+AuthContext.displayName = "Auth"
+
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSessionState] = useState<AuthSession | null>(null)
+  const [prefetchedMessages, setPrefetchedMessages] = useState<AuthMeMessageRow[] | null>(null)
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
     const id = window.setTimeout(() => {
-      setSessionState(readStoredSession())
-      setReady(true)
+      const stored = readStoredSession()
+      setSessionState(stored)
+      if (!stored?.accessToken) {
+        setReady(true)
+      }
     }, 0)
     return () => window.clearTimeout(id)
   }, [])
+
+  useEffect(() => {
+    const token = session?.accessToken
+
+    if (!token) {
+      setPrefetchedMessages(null)
+      setReady(true)
+      return
+    }
+
+    let cancelled = false
+    setReady(false)
+
+    ;(async () => {
+      try {
+        const me = await requestMe(token)
+        if (cancelled) return
+        setSessionState((prev) => {
+          if (!prev?.accessToken) return prev
+          const next = { accessToken: prev.accessToken, email: me.email }
+          window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+          return next
+        })
+        setPrefetchedMessages(me.messages)
+      } catch {
+        if (cancelled) return
+        window.localStorage.removeItem(STORAGE_KEY)
+        setSessionState(null)
+        setPrefetchedMessages(null)
+      } finally {
+        if (!cancelled) setReady(true)
+      }
+    })()
+
+    return () => {
+      cancelled = true
+    }
+  }, [session?.accessToken])
 
   const setSession = useCallback((next: AuthSession | null) => {
     setSessionState(next)
@@ -49,24 +103,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
+  const clearPrefetchedMessages = useCallback(() => {
+    setPrefetchedMessages(null)
+  }, [])
+
   const logout = useCallback(() => {
     setSession(null)
   }, [setSession])
 
   const value = useMemo(
-    () => ({ session, ready, setSession, logout }),
-    [session, ready, setSession, logout],
+    () => ({
+      session,
+      ready,
+      prefetchedMessages,
+      clearPrefetchedMessages,
+      setSession,
+      logout,
+    }),
+    [session, ready, prefetchedMessages, clearPrefetchedMessages, setSession, logout],
   )
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  return <AuthContext value={value}>{children}</AuthContext>
 }
 
-export function useAuth() {
-  const ctx = useContext(AuthContext)
-  if (!ctx) {
+export function useAuth(): AuthContextValue {
+  const value = use(AuthContext)
+  if (!value) {
     throw new Error("useAuth deve ser usado dentro de AuthProvider")
   }
-  return ctx
+  return value
 }
 
 export function displayNameFromEmail(email: string) {
