@@ -25,6 +25,10 @@ install:
 	uv sync
 
 dev:
+	PYTHONPATH=. uv run alembic upgrade head
+	uv run uvicorn src.main:app --reload --port 8000
+
+dev-no-migrate:
 	uv run uvicorn src.main:app --reload --port 8000
 
 run:
